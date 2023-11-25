@@ -1,6 +1,7 @@
 package main
 
 import (
+	"crowdfunding/auth"
 	"crowdfunding/handler"
 	"crowdfunding/user"
 
@@ -22,6 +23,9 @@ func main() {
 
 	userRepository := user.NewRepository(db)
 	userService := user.NewService(userRepository)
+	authService := auth.NewService()
+
+	// fmt.Println(authService.GenerateToken(1001))
 
 	// Untuk test service
 	// input := user.LoginInput{
@@ -54,10 +58,9 @@ func main() {
 	// buat cek masuk ato ngga secara paksa
 	// userService.SaveAvatar(1, "images/1-profile.png")
 
-	userHandler := handler.NewUserHandler(userService)
+	userHandler := handler.NewUserHandler(userService, authService)
 
 	router := gin.Default()
-
 	api := router.Group("/api/v1")
 
 	api.POST("/users", userHandler.RegisterUser)
